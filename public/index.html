@@ -1,0 +1,202 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <!-- Compiled and minified CSS -->
+  <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.6.1/firebase-ui-auth.css" />
+  <script src="https://www.gstatic.com/firebasejs/ui/4.6.1/firebase-ui-auth.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <title>RMT Productions</title>
+</head>
+<body class="grey lighten-3">
+
+<!-- NAVBAR -->
+<nav class="z-depth-0 grey lighten-4">
+  <div class="nav-wrapper container">
+    <<a href="#" class="brand-logo">
+      <h5 class="indigo-text darken-4">RMT Productions</h5>
+    </a>>
+    <ul id="nav-mobile" class="right hide-on-med-and-down">
+      <li class="logged-in" style="display: none;">
+        <a href="#" class="grey-text modal-trigger" data-target="modal-account">Account</a>
+      </li>
+      <li class="logged-in" style="display: none;">
+        <a href="#" class="grey-text" id="logout">Logout</a>
+      </li>
+      <li class="admin" style="display: none;">
+        <a href="#" class="grey-text modal-trigger" data-target="modal-createArtist">Create Artist</a>
+      </li>
+      <li class="admin" style="display: none;">
+        <a href="#" class="grey-text modal-trigger" data-target="modal-addWork">Add Work</a>
+      </li>
+      <li class="logged-out" style="display: none;">
+        <a href="#" class="grey-text modal-trigger" data-target="modal-login">Login</a>
+      </li>
+      </span>
+    </ul>
+  </div>
+</nav>
+
+<!-- ADMIN ACTIONS -->
+<form class="center-align admin-actions admin" style="margin: 40px auto; max-width: 300px; display: none;">
+  <input type="email" placeholder="User email" id="admin-email" required />
+  <button class="btn-small yellow darken-2 z-depth-0">Make admin</button>
+</form>
+
+
+<!-- LOGIN MODAL -->
+<div id="modal-login" class="modal">
+  <div class="modal-content">
+    <h4>Login</h4><br/>
+    <form id="login-form">
+      <div id="firebaseui-auth-container"></div>
+      <div id="loader">Loading...</div>
+    </form>
+  </div>
+</div>
+
+<!-- ACCOUNT MODAL -->
+<div id="modal-account" class="modal">
+  <div class="modal-content center-align">
+    <h4>Account details</h4><br />
+    <div class="account-details"></div>
+  </div>
+</div>
+
+<!-- CREATE ARTIST MODAL -->
+<div id="modal-createArtist" class="modal">
+  <div class="modal-content">
+    <h4>Create Guide</h4><br/>
+    <form id="createArtist-form">
+      <div class="input-field">
+        <input type="text" id="artistName" required>
+        <label for="artistName">Artist Name</label>
+      </div>
+      <div class="input-field">
+        <input type="text" id="discordTag" required>
+        <label for="artistName">Discord Tag</label>
+      </div>
+      <div class="input-field col s12">
+        <select multiple id="positionSelect" required>
+          <option value="" disabled selected>Choose the Position</option>
+          <option value="GFX">GFX</option>
+          <option value="VFX">VFX</option>
+          <option value="Editing">Editing</option>
+        </select>
+        <label for="positionSelect">Position</label>
+      </div>
+
+      <button id="artSub" class="btn yellow darken-2 z-depth-0">Create</button>
+      <div class="progress">
+        <div class="indeterminate"></div>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<!-- ADD WORK MODAL -->
+<div id="modal-addWork" class="modal">
+  <div class="modal-content">
+    <h4>Add Work</h4><br/>
+    <form id="addWork-form">
+      <div class="input-field col s12">
+        <select id="workType" required>
+          <option value="" disabled selected>Choose the Work Type</option>
+          <option value="banner">Banner</option>
+          <option value="pfp">Profile Picture</option>
+          <option value="thumbnail">Thumbnail</option>
+          <option value="mascotlogo">Mascot Logo</option>
+          <option value="logo">Logo</option>
+          <option value="wallpaper">Wallpaper</option>
+        </select>
+        <label for="workType">Type of Work</label>
+      </div>
+      <h5>Make sure the file name is unique!</h5>
+      <div class="file-field input-field">
+        <div class="btn">
+          <span>File</span>
+          <input type="file" accept=".png,.jpg" id="workUploadFile" required placeholder="Upload an Image">
+        </div>
+        <div class="file-path-wrapper">
+          <input class="file-path validate" type="text">
+        </div>
+      </div>
+      <div class="input-field col s12">
+        <select id="workArtist" required>
+
+
+        </select>
+        <label for="workArtist">Artist</label>
+      </div>
+
+      <button id="workSub" class="btn yellow darken-2 z-depth-0">Create</button>
+      <div class="progress">
+        <div class="indeterminate"></div>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+
+<!-- GUIDE LIST -->
+<div class="container" style="margin-top: 40px;">
+  <ul class="collapsible z-depth-0 guides" style="border: none;">
+
+  </ul>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/5.6.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/5.6.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/5.6.0/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/5.6.0/firebase-functions.js"></script>
+<script src="https://www.gstatic.com/firebasejs/5.6.0/firebase-storage.js"></script>
+
+  <script>
+    // Initialize Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyAEQLJSCP42QY0IBtVUG-lNzs2gKkfExK0",
+      authDomain: "personalwebsite-47993.firebaseapp.com",
+      projectId: "personalwebsite-47993",
+      storageBucket: "gs://personalwebsite-47993.appspot.com",
+      messagingSenderId: "357875989504",
+      appId: "1:357875989504:web:c345b1ac5d09e4eab3ace5",
+      measurementId: "G-Q5QZE9S168"
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    // make auth and firestore references
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    const functions = firebase.functions();
+    const storageRef = firebase.storage().ref()
+
+    // update firestore settings
+    db.settings({ timestampsInSnapshots: true });
+
+
+  </script>
+  <!-- Compiled and minified JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+  <script>
+    // document.addEventListener('DOMContentLoaded', function() {
+    //   var elems = document.querySelectorAll('select');
+    //   var instances = M.FormSelect.init(elems, options);
+    // });
+
+    // Or with jQuery
+
+    $(document).ready(function(){
+      $('select').formSelect();
+    });
+  </script>
+
+
+  <script src="scripts/auth.js"></script>
+  <script src="scripts/index.js"></script>
+</body>
+</html>

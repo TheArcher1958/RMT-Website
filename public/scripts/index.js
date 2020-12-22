@@ -1,5 +1,5 @@
 // DOM elements
-const guideList = document.querySelector('.guides');
+// const guideList = document.querySelector('.guides');
 const artistList = document.querySelector('#workArtist');
 const loggedOutLinks = document.querySelectorAll('.logged-out');
 const loggedInLinks = document.querySelectorAll('.logged-in');
@@ -74,13 +74,12 @@ const setupUI = (user) => {
 };
 
 const setupArtists = (data) => {
-  console.log(`Data: ${data}`)
   if (data.length) {
     let html = '<option value="" disabled selected>Choose your option</option>';
     data.forEach(doc => {
       const artist = doc.data();
       const li = `
-        <option value="${doc.id}">${artist.name}</option>
+        <option value="${artist.name}:${doc.id}">${artist.name}</option>
       `;
       html += li;
     });
@@ -93,24 +92,54 @@ const setupArtists = (data) => {
 }
 
 
-// setup guides
-const setupGuides = (data) => {
+// setup Work Showcase
+const setupWork = (data) => {
+
+  // {artist: "TitanJin", artistID: "Tw45XpyWB3UtV85HpoDs", type: "banner", url: "https://firebasestorage.googleapis.com/v0/b/person…=media&token=0ca1bfb0-c85d-44ad-9cd1-8b0536b4e5a3"}
 
   if (data.length) {
-    let html = '';
+    // let bannerHtml = '';
+    // let pfpHtml = '';
+    // let thumbnailHtml = '';
+    // let mascotlogoHtml = '';
+    // let logoHtml = '';
+    // let wallpaperHtml = '';
+    const workTypes = {
+      "banner": '',
+      "pfp": '',
+      "thumbnail": '',
+      "mascotlogo": '',
+      "logo": '',
+      "wallpaper": ''
+    };
     data.forEach(doc => {
-      const guide = doc.data();
+      console.log(doc.data());
+      const work = doc.data();
       const li = `
-        <li>
-          <div class="collapsible-header grey lighten-4"> ${guide.name} </div>
-          <div class="collapsible-body white"> ${guide.position} </div>
-        </li>
+        <div class="col s3 hoverable card">
+            <div class="card-image">
+              <img class="responsive-img materialboxed" src="${work.url}">
+              <span class="card-title">${work.artist}</span>
+            </div>
+            <div class="card-action">
+              <a href="${work.artistID}">View more by ${work.artist}</a>
+            </div>
+        </div>
       `;
-      html += li;
+
+      workTypes[work.type] += li
     });
-    guideList.innerHTML = html
+    ["banner","pfp","thumbnail","mascotlogo","logo","wallpaper"].forEach(item => {
+      let workListCards = document.querySelector(`#${item}`);
+        workListCards.innerHTML = workTypes[item];
+    });
+      $('.materialboxed').materialbox();
+      $('.tabs').tabs();
   } else {
-    guideList.innerHTML = '<h5 class="center-align">Login to view guides</h5>';
+    ["banner","pfp","thumbnail","mascotlogo","logo","wallpaper"].forEach(item => {
+      let workListCards = document.querySelector(`#${item}`);
+      workListCards.innerHTML = '<h5 class="center-align">Unable to find anything.</h5>';
+    });
   }
 
 
@@ -124,5 +153,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
   var items = document.querySelectorAll('.collapsible');
   M.Collapsible.init(items);
+
 
 });

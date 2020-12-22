@@ -9,8 +9,9 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
   <title>RMT Productions</title>
+
 </head>
-<body class="grey lighten-3">
+<div class="grey lighten-3">
 
 <!-- NAVBAR -->
 <nav class="z-depth-0 grey lighten-4">
@@ -142,12 +143,45 @@
 </div>
 
 
-<!-- GUIDE LIST -->
-<div class="container" style="margin-top: 40px;">
-  <ul class="collapsible z-depth-0 guides" style="border: none;">
+<!-- TAB LIST -->
+<div class="row">
+  <div class="col s12">
+    <ul class="tabs">
+      <li class="tab col s2"><a class="" href="#banner">Banners</a></li>
+      <li class="tab col s2"><a href="#pfp">Profile Pictures</a></li>
+      <li class="tab col s2"><a href="#thumbnail">Thumbnails</a></li>
+      <li class="tab col s2"><a href="#mascotlogo">Mascot Logos</a></li>
+      <li class="tab col s2"><a href="#logo">Logos</a></li>
+      <li class="tab col s2"><a href="#wallpaper">Wallpapers</a></li>
+    </ul>
+  </div>
+  <div class="row" style="margin-top: 40px;">
+    <div class="" id="banner">
 
-  </ul>
+    </div>
+    <div class="" id="pfp">
+
+    </div>
+    <div class="" id="thumbnail">
+
+    </div>
+    <div class="" id="mascotlogo">
+
+    </div>
+    <div class="" id="logo">
+
+    </div>
+    <div class="" id="wallpaper">
+
+    </div>
+  </div>
 </div>
+
+</div>
+
+
+
+
 
 <script src="https://www.gstatic.com/firebasejs/5.6.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/5.6.0/firebase-auth.js"></script>
@@ -182,16 +216,19 @@
   <!-- Compiled and minified JavaScript -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 
-  <script>
-    // document.addEventListener('DOMContentLoaded', function() {
-    //   var elems = document.querySelectorAll('select');
-    //   var instances = M.FormSelect.init(elems, options);
-    // });
 
-    // Or with jQuery
+  <style>
+    .formax {
+      max-width: 400px;
+    }
+  </style>
+
+  <script>
 
     $(document).ready(function(){
       $('select').formSelect();
+      // $('.tabs').tabs();
+      $('.materialboxed').materialbox();
     });
   </script>
 

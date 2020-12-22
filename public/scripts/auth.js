@@ -19,19 +19,17 @@ auth.onAuthStateChanged(user => {
       user.admin = idTokenResult.claims.admin;
       setupUI(user);
     });
-    // db.collection('artists').get().then(function(doc) {
-    //   setupArtists(doc.docs);
-    // })
-    //   .catch(function(error) {
-    //   console.log("Error getting documents: ", error);
-    // });;
-    db.collection('artists').onSnapshot(snapshot => {
-      setupGuides(snapshot.docs);
-      setupArtists(snapshot.docs);
+
+    db.collection('artists').get().then(function(doc){
+      setupArtists(doc.docs);
+    }, err => console.log(err.message));
+
+    db.collection('work').onSnapshot(snapshot => {
+      setupWork(snapshot.docs);
     }, err => console.log(err.message));
   } else {
     setupUI();
-    setupGuides([]);
+    setupWork([]);
 
   }
 });
@@ -85,32 +83,35 @@ createWork.addEventListener('submit', (e) => {
   var uploadedFile = $('#workUploadFile').prop('files');
   var fileRef = storageRef.child(createWork.workType.value + '/' + uploadedFile[0].name);
   fileRef.put(uploadedFile[0]).then(function(snapshot) {
-    db.collection('work').add({
-      path: snapshot.ref.fullPath,
-      type: createWork.workType.value,
-      artist: createWork.workArtist.value,
-    }).then(function(workDocRef) {
-      db.collection('artists').doc(createWork.workArtist.value).update({
-        work: firebase.firestore.FieldValue.arrayUnion(workDocRef.id),
-      }).then(() => {
-        // close the create modal & reset form
-        M.toast({html: 'Added work to artist!'})
-        const modal = document.querySelector('#modal-addWork');
-        createWork.reset();
-        hideLoadingBars()
-        document.getElementById("workSub").disabled = false;
-        M.Modal.getInstance(modal).close();
+    var artistInfo = createWork.workArtist.value.split(":");
+    snapshot.ref.getDownloadURL().then(function(imageURL){
+      db.collection('work').add({
+        url: imageURL,
+        type: createWork.workType.value,
+        artist: artistInfo[0],
+        artistID: artistInfo[1],
+      }).then(function(workDocRef) {
+        db.collection('artists').doc(artistInfo[1]).update({
+          work: firebase.firestore.FieldValue.arrayUnion(workDocRef.id),
+        }).then(() => {
+          // close the create modal & reset form
+          M.toast({html: 'Added work to artist!'})
+          const modal = document.querySelector('#modal-addWork');
+          createWork.reset();
+          hideLoadingBars()
+          document.getElementById("workSub").disabled = false;
+          M.Modal.getInstance(modal).close();
+        }).catch(err => {
+          M.toast({html: 'A problem has occurred!\nCode: 96'})
+          hideLoadingBars();
+          document.getElementById("workSub").disabled = false;
+        });
       }).catch(err => {
-        M.toast({html: 'A problem has occurred!\nCode: 96'})
+        M.toast({html: 'A problem has occurred!\nCode: 99'})
         hideLoadingBars();
         document.getElementById("workSub").disabled = false;
       });
-    }).catch(err => {
-      M.toast({html: 'A problem has occurred!\nCode: 99'})
-      hideLoadingBars();
-      document.getElementById("workSub").disabled = false;
     });
-
   });
 });
 

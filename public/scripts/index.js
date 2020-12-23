@@ -98,12 +98,7 @@ const setupWork = (data) => {
   // {artist: "TitanJin", artistID: "Tw45XpyWB3UtV85HpoDs", type: "banner", url: "https://firebasestorage.googleapis.com/v0/b/person…=media&token=0ca1bfb0-c85d-44ad-9cd1-8b0536b4e5a3"}
 
   if (data.length) {
-    // let bannerHtml = '';
-    // let pfpHtml = '';
-    // let thumbnailHtml = '';
-    // let mascotlogoHtml = '';
-    // let logoHtml = '';
-    // let wallpaperHtml = '';
+
     const workTypes = {
       "banner": '',
       "pfp": '',
@@ -119,10 +114,10 @@ const setupWork = (data) => {
         <div class="col s3 hoverable card">
             <div class="card-image">
               <img class="responsive-img materialboxed" src="${work.url}">
-              <span class="card-title">${work.artist}</span>
+              <span class="indigo-text darken-4 card-title">${work.artist}</span>
             </div>
             <div class="card-action">
-              <a href="${work.artistID}">View more by ${work.artist}</a>
+              <a class="" href="artists.html?artistID=${work.artistID}">View more by ${work.artist}</a>
             </div>
         </div>
       `;

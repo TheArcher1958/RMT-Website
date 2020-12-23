@@ -1,0 +1,142 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <!-- Compiled and minified CSS -->
+  <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.6.1/firebase-ui-auth.css" />
+  <script src="https://www.gstatic.com/firebasejs/ui/4.6.1/firebase-ui-auth.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <title>RMT Productions</title>
+
+</head>
+<div class="grey lighten-3">
+
+  <!-- NAVBAR -->
+  <nav class="z-depth-0 grey lighten-4">
+    <div class="nav-wrapper container">
+      <<a href="#" class="brand-logo">
+      <h5 class="indigo-text darken-4">RMT Productions</h5>
+    </a>>
+    </div>
+  </nav>
+  <div class="backButton">
+    <a class="waves-effect waves-light btn" href="index.html"><i class="material-icons left">arrow_back</i>Back</a>
+  </div>
+
+  <h5 id="artistName" class="center-align"></h5>
+  <h6 id="artistDiscord" class="center-align"></h6>
+
+
+  <div id="artistWork" class="row">
+
+  </div>
+
+</div>
+
+
+<style>
+  .backButton {
+    margin-top: 40px;
+    margin-left: 80px;
+  }
+</style>
+
+
+<script src="https://www.gstatic.com/firebasejs/5.6.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/5.6.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/5.6.0/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/5.6.0/firebase-functions.js"></script>
+<script src="https://www.gstatic.com/firebasejs/5.6.0/firebase-storage.js"></script>
+
+<script>
+  // Initialize Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyAEQLJSCP42QY0IBtVUG-lNzs2gKkfExK0",
+    authDomain: "personalwebsite-47993.firebaseapp.com",
+    projectId: "personalwebsite-47993",
+    storageBucket: "gs://personalwebsite-47993.appspot.com",
+    messagingSenderId: "357875989504",
+    appId: "1:357875989504:web:c345b1ac5d09e4eab3ace5",
+    measurementId: "G-Q5QZE9S168"
+  };
+  firebase.initializeApp(firebaseConfig);
+
+  // make auth and firestore references
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+  const functions = firebase.functions();
+  const storageRef = firebase.storage().ref()
+
+  // update firestore settings
+  db.settings({ timestampsInSnapshots: true });
+
+
+</script>
+<!-- Compiled and minified JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+
+
+<script>
+  let artistID = "";
+  $(document).ready(function(){
+
+    $('.materialboxed').materialbox();
+  });
+
+  var url_string = window.location.href; //window.location.href
+  var url = new URL(url_string);
+  artistID = url.searchParams.get("artistID");
+  if(artistID != "") {
+    console.log(artistID);
+    let html = '';
+    db.collection('artists').doc(artistID).get().then(doc => {
+      console.log(doc.data())
+      let artistNameTag = document.querySelector(`#artistName`);
+      let artistDiscord = document.querySelector(`#artistDiscord`);
+
+      var artist = doc.data();
+      artistNameTag.innerHTML = artist.name;
+      artistDiscord.innerHTML = artist.discordTag;
+      var validWorks = [];
+      db.collection('work').get().then(function (workDoc) {
+        workDoc.docs.forEach(awork => {
+          var work = awork.data()
+          if (work.artistID == artistID) {
+            validWorks.push(work);
+          }
+        });
+        validWorks.forEach(work => {
+          const cards = `
+          <div class="col s3 hoverable card">
+            <div class="card-image">
+              <img class="responsive-img materialboxed" src="${work.url}">
+<!--              <span class="indigo-text darken-4 card-title">${work.artist}</span>-->
+            </div>
+            <div class="card-action">
+              <h5 class="indigo-text darken-4 card-title">${work.artist}</h5>
+            </div>
+        </div>
+        `;
+          html += cards;
+        }, err => console.log(err.message));
+        let workListCards = document.querySelector(`#artistWork`);
+        workListCards.innerHTML = html;
+        $('.materialboxed').materialbox();
+      }, err => console.log(err.message));
+    });
+  } else {
+
+  }
+
+
+</script>
+
+
+<!--<script src="scripts/auth.js"></script>-->
+<!--<script src="scripts/index.js"></script>-->
+</body>
+</html>

@@ -50,6 +50,7 @@ createArtist.addEventListener('submit', (e) => {
   db.collection('artists').add({
     name: createArtist.artistName.value,
     position: positionValues.join(", "),
+    discordTag: createArtist.discordTag.value,
   }).then(() => {
     M.toast({html: 'Artist Created!'})
     const modal = document.querySelector('#modal-createArtist');

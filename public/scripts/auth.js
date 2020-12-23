@@ -82,7 +82,7 @@ createWork.addEventListener('submit', (e) => {
   }
   document.getElementById("workSub").disabled = true;
   var uploadedFile = $('#workUploadFile').prop('files');
-  var fileRef = storageRef.child(createWork.workType.value + '/' + uploadedFile[0].name);
+  var fileRef = storageRef.child(createWork.workType.value + '/' + firebase.firestore.Timestamp.now().seconds.toString()  + '-' + Math.random().toString(36).substring(7) + '-' + uploadedFile[0].name);
   fileRef.put(uploadedFile[0]).then(function(snapshot) {
     var artistInfo = createWork.workArtist.value.split(":");
     snapshot.ref.getDownloadURL().then(function(imageURL){
